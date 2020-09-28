@@ -74,7 +74,6 @@ export default {
 <style scope lang="scss">
 .user{
   margin: 0 auto;
-  // height: 790px;
   width: 1440px;
   display: flex;
   .user-right{
