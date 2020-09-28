@@ -3,13 +3,12 @@
     <div class="theme"><h3>商城</h3></div>
     <div class="score">
         <h3>当前积分</h3>
-        <h1 v-if="isRecord === false">{{ user.integration }}</h1>
-        <h1 v-else>{{ form.integration }}</h1>
+        <h1>{{ form.integration }}</h1>
     </div>
     <div class="shop">
         <h3>商品列表</h3>
         <div class="shop-card">
-          <div class="shopInfo" v-for="(item,index) in list" :key="'item._id'+index">
+          <div class="shopInfo" v-for="(item,index) in list" :key="'recording'+index">
             <img :src="item.image" alt="" class="image">
             <p>{{ item.name }}</p>
             <div class="to-record">
@@ -19,79 +18,70 @@
           </div>
         </div>
     </div>
+
+    
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState,mapActions } from "vuex"
 
 export default {
   name: "shop",
   data(){
     return{
+      dialogVisible: false,
       list: [],
-      form: {},
-      isRecord: false
+      form: {}
     }
-  },
-  created() {
-    this.getList()
   },
   computed: {
     ...mapState({
       "user": state => state.login.user
     }),
   },
+  created() {
+    this.getList()
+    this.form = JSON.parse(JSON.stringify(this.user))
+  },
   methods: {
-    async getList(){
-      const data = await this.yGet("/shop/shopList")
-      if(data){
-        console.log("data",data)
-        this.list = data
-      }
-    },
+    ...mapActions([
+      'setUser'
+    ]),
     async getUser(){
-      let id = localStorage.getItem('userid')
-      const data = await this.yGet('/user/userinfo',
+      let id = JSON.parse(localStorage.getItem("userinfo"))._id
+      const data = await this.yGet("/user/userinfo",
       {
         params:{id}
       })
-      console.log('user data',data)
       if(data){
+        console.log("user data",data)
         this.form = data
-       
+        this.setUser(JSON.parse(JSON.stringify(this.form)));
       }
     },
-    async recordShop(item){
+    async getList(){
+      const data = await this.yGet("/shop/shopList")
+      if(data){
+        console.log("list data",data)
+        this.list = data
+      }
+    },
+    async record(item){
       let params = {
         id : item._id
       }
       const data = await this.yPut("/shop/exchange",params)
+      console.log("record data",data)
       if(data){
-        console.log("data",data)
         this.getUser()
-        this.isRecord = true
-      }
-    },
-    record(item) {
-      this.$confirm('此操作将兑换商品, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
         this.$message({
           type: 'success',
           message: '兑换成功!'
         });
-        this.recordShop(item)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消兑换'
-        });          
-      });
-    }
-
+      }
+    },
+    
   },
 };
 </script>

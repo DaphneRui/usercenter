@@ -53,7 +53,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if((to.name !== 'login') && (to.name !== 'regist') ){
-    const isLogin = localStorage.getItem("userid") || ""
+    const isLogin = JSON.parse(localStorage.getItem("userinfo"))._id || ""
     if(!isLogin){
       next({
         name: "login"

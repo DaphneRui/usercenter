@@ -107,8 +107,9 @@ export default {
       if(data){
         this.$message({
           type: 'success',
-          message: '注册成功!'
+          message: '注册成功,请登录!'
         });
+        this.toLogin()
       }
     }
   },

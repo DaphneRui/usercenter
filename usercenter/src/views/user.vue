@@ -14,12 +14,20 @@
           </div>
       </router-link>
       <div class="user-container">
-        <el-button type="text" @click="open" style="color: white; font-size: 16px">退出</el-button>
+        <el-button type="text" @click="quit" style="color: white; font-size: 16px">退出</el-button>
       </div>
     </div>
     <div class="user-left">
       <router-view></router-view>
     </div>
+
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <span>此操作将退出, 是否继续?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmQuit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -30,43 +38,34 @@ export default {
   name: "user",
   data(){
     return{
-
+      dialogVisible : false
     }
   },
   created() {
-
   },
   computed: {
-    routeName(){
-      return this.$route.name
-    },
     ...mapState({
       "user": state => state.login.user
     }),
+    routeName(){
+      return this.$route.name 
+    },
+    
   },
   methods: {
-    open() {
-      this.$confirm('此操作将退出, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '退出成功!'
-        });
-        localStorage.removeItem("userid")
-        this.$router.replace({
-          name: "login"
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消退出'
-        });          
+    quit() {
+      this.dialogVisible = true
+    },
+    confirmQuit(){ 
+      localStorage.removeItem("userinfo")
+      this.$message({
+        type: 'success',
+        message: '退出成功!'
       });
+      this.$router.replace({
+        name: "login"
+      })
     }
-
   }
 };
 </script>
@@ -88,6 +87,7 @@ export default {
     bottom: 0;
     color: white;
     overflow: hidden;
+    z-index: 9999;
     .avater{
       width: 100px;
       height: 100px;

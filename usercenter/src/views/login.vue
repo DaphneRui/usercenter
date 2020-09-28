@@ -68,17 +68,10 @@ export default {
       const data = await this.yPost('/user/login',this.loginForm)
       console.log('login data',data, this.$store)
       if(data){
-        const userid = data.user._id
-        localStorage.setItem('userid',userid)
         this.setUser(data.user);
         this.$router.push({
           name: "user"
         })
-      }else{
-        this.$message({
-          type: 'info',
-          message: '用户名或密码错误,请重新输入!'
-        });
       }
     }    
   },

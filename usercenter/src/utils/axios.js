@@ -8,9 +8,9 @@ const api = axios.create({
 
 // 添加请求拦截器
 api.interceptors.request.use( config => {
-  const userid = localStorage.getItem("userid") || ""
-  if(userid){
-    config.headers['user'] = userid
+  const user = JSON.parse(localStorage.getItem("userinfo")) || ""
+  if(user){
+    config.headers['user'] = user._id
   }
   return config;
 }, error => {
@@ -19,6 +19,7 @@ api.interceptors.request.use( config => {
 
 const post = async (url,data)=>{
   let response = await api.post(url,data).catch(error => {
+    console.log('errorrorororo', error, error.response)
     errorHandler(error)
   })
   return responseHandler(response)
@@ -49,8 +50,8 @@ const put = async (url,data)=>{
 
 //公共处理错误的方法
 const errorHandler = (error)=>{
-    let errorMsg = (error.response && error.response.data && error.response.data.message) || '请求错误,请重试';
-
+  let errorMsg = (error.response && error.response.data && error.response.data.message) || '请求错误,请重试';
+  alert(errorMsg);
 };
 
 //公共的处理返回体的方法

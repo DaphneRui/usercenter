@@ -15,16 +15,6 @@ Vue.prototype.yPut = put
 
 Vue.config.productionTip = false;
 
-Vue.filter("globalFormatTime", time => {
-  let value = new Date(time);
-  let y = value.getFullYear();
-  let m = value.getMonth() + 1;
-  let d = value.getDate();
-  let h = value.getHours()
-  let mm = value.getMinutes()
-  return y + "-" + m + "-" + d + ' ' + h + ':' + mm;
-});
-
 new Vue({
   router,
   store,

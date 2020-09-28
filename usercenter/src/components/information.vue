@@ -35,10 +35,12 @@
 </template>
 
 <script>
+import { mapState } from "vuex"
+
 export default {
   name: "information",
   created() {
-    this.getUser()
+   
   },
   data() {
     var validatePass3 = (rule, value, callback)=>{
@@ -75,7 +77,6 @@ export default {
     };
     return {
       dialogFormVisible: false,
-      form: {},
       changePwd: {
         pass:'',
         passNew: '',
@@ -97,7 +98,9 @@ export default {
     };
   },
   computed: {
-
+    ...mapState({
+      "form": state => state.login.user
+    }),
   },
   methods: {
     saveForm() {
@@ -113,25 +116,15 @@ export default {
       this.$refs.changePwd.resetFields();
       this.dialogFormVisible = false
     },
-    async getUser(){
-      let id = localStorage.getItem('userid')
-      const data = await this.yGet('/user/userinfo',
-      {
-        params:{id}
-      })
-      if(data){
-        this.form = data
-      }
-    },
     async updatePwd(){
       let params = {
         oldPassword: this.form.password,
-        newPassword: this.changePwd.checkPass
+        newPassword: this.changePwd.checkPass,
       }
       const data = await this.yPut('/user/changePassword',params)
       console.log('pwd',data)
       if(data){
-        localStorage.removeItem("userid")
+        localStorage.removeItem("userinfo")
         this.$router.replace({
           name: "login"
         })
